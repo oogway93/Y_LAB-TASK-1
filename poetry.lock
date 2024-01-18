@@ -161,6 +161,17 @@ python-versions = ">=3.8"
 cli = ["click (>=5.0)"]
 
 [[package]]
+name = "python-multipart"
+version = "0.0.6"
+description = "A streaming multipart parser for Python"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.extras]
+dev = ["atomicwrites (==1.2.1)", "attrs (==19.2.0)", "coverage (==6.5.0)", "hatch", "invoke (==1.7.3)", "more-itertools (==4.3.0)", "pbr (==4.3.0)", "pluggy (==1.0.0)", "py (==1.11.0)", "pytest-cov (==4.0.0)", "pytest-timeout (==2.1.0)", "pytest (==7.2.0)", "pyyaml (==5.1)"]
+
+[[package]]
 name = "sniffio"
 version = "1.3.0"
 description = "Sniff out which async library your code is running under"
@@ -246,7 +257,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "53651be69e043f3a1f88eb2576c049771ee34fc54a68aabc14b80c920f9ac1e8"
+content-hash = "7ff59f008fe89b372a348b4ed3a93ce2f70a04695e1e09cf60f56ced94a9d810"
 
 [metadata.files]
 annotated-types = []
@@ -263,6 +274,7 @@ idna = []
 pydantic = []
 pydantic-core = []
 python-dotenv = []
+python-multipart = []
 sniffio = []
 sqlalchemy = []
 starlette = []

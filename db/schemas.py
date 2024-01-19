@@ -1,13 +1,13 @@
+from uuid import UUID
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class MenuBase(BaseModel):
+class MenuAddDTO(BaseModel):
     title: str
     description: str
-    submenus_count: int | None = 0
 
 
-class MenuOUT(MenuBase):
-    id: int
-
-
+class MenuDTO(MenuAddDTO):
+    id: UUID

@@ -5,12 +5,14 @@ from fastapi import FastAPI
 
 from handlers.handlers_menu import router
 from handlers.handlers_submenu import router as router2
+from handlers.handlers_dish import router as router3
 from db.queries import CRUDRestaurantService
 from db.models import metadata_obj
 
 app = FastAPI(title="Task 1")
 app.include_router(router)
 app.include_router(router2)
+app.include_router(router3)
 
 
 async def main():

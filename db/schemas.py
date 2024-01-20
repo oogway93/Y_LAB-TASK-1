@@ -12,3 +12,9 @@ class Menu(BaseModel):
 class Submenu(BaseModel):
     title: str
     description: str
+
+
+class Dish(BaseModel):
+    title: str
+    description: str
+    price: float

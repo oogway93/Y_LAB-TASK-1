@@ -33,8 +33,8 @@ async def get_menu_by_id(id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/menus")
-async def get_list_menus(db: Session = Depends(get_db)):
-    return restaurant_service.getting_list_menus(db)
+async def get_all_menus(db: Session = Depends(get_db)):
+    return restaurant_service.get_all_menus(db)
 
 
 @router.patch("/menus/{id}")

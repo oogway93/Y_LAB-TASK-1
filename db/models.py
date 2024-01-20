@@ -18,7 +18,8 @@ class Dish(Base):
     title: Mapped[str] = mapped_column(unique=True, nullable=True)
     description: Mapped[str] = mapped_column(nullable=True)
     price: Mapped[float] = mapped_column(index=True)
-    submenu_id = Column(UUID(as_uuid=True), ForeignKey("submenus.id"))
+    submenu_id = Column(UUID(as_uuid=True), ForeignKey("submenus.id", ondelete="CASCADE"))
+    submenus = relationship("Submenu", back_populates="dishes")
 
 
 class Submenu(Base):
@@ -28,7 +29,7 @@ class Submenu(Base):
     description: Mapped[str]
     dishes_count: Mapped[int] = mapped_column(default=0)
 
-    menu_id: Mapped[int] = mapped_column(ForeignKey("menus.id", ondelete="CASCADE"))
+    menu_id = Column(UUID(as_uuid=True), ForeignKey("menus.id", ondelete="CASCADE"))
     menu: Mapped["Menu"] = relationship(back_populates="submenus")
     dishes = relationship('Dish', back_populates='submenus')
     # dishes: Mapped["Dish"] = relationship(back_populates="submenus", cascade="all, delete")
@@ -54,4 +55,4 @@ class Menu(Base):
 # Menu.submenus = relationship('Submenu', back_populates='menu')
 # Submenu.dishes = relationship('Dish', back_populates='submenus')
 # Dish.submenu_id = Column(Integer, ForeignKey("submenus.id"))
-Dish.submenus = relationship("Submenu", back_populates="dishes")
+# Dish.submenus = relationship("Submenu", back_populates="dishes")

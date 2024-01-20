@@ -2,53 +2,77 @@ import uuid
 
 from sqlalchemy import select, update, delete
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import joinedload
 
 from db.database import async_engine, Base, engine, SessionLocal
-from db.models import Menu
+from db.models import Menu, Submenu
 from db import schemas
 
 
-class RestaurantService:
+class CRUDRestaurantService:
     """ALL ORM METHODS."""
+
+    def __init__(self, model):
+        self.model = model
 
     @staticmethod
     def create_tables():
         Base.metadata.drop_all(engine)
         Base.metadata.create_all(engine)
 
-    @staticmethod
-    def creation_menu(data: schemas.Menu, db: Session):
-        created_menu = Menu(title=data.title, description=data.description)
-        db.add(created_menu)
+    def creation_menu(self, data: schemas.Menu | schemas.Submenu, db: Session):
+        created_item = self.model(title=data.title, description=data.description)
+        db.add(created_item)
         db.commit()
-        db.refresh(created_menu)
-        return created_menu
+        db.refresh(created_item)
+        return created_item
 
-    @staticmethod
-    def getting_list_menus(db: Session):
-        return db.query(Menu).all()
+    def getting_list_menus(self, db: Session):
+        return db.query(self.model).all()
 
-    @staticmethod
-    def getting_menu_by_id(id: uuid.UUID, db: Session):
+    def getting_menu_by_id(self, id: uuid.UUID, db: Session):
         try:
-            stmt = db.query(Menu).filter(Menu.id == id).first()
+            stmt = db.query(Menu).filter(self.model.id == id).first()
         except Exception as e:
             print(e)
             return False
         return stmt
 
-    @staticmethod
-    def updating_menu(id: uuid.UUID, data: schemas.Menu, db: Session):
-        updated_menu = db.query(Menu).filter(Menu.id == id).first()
-        updated_menu.title = data.title
-        updated_menu.description = data.description
-        db.add(updated_menu)
+    def updating_menu(self, id: uuid.UUID, data: schemas.Menu | schemas.Submenu, db: Session):
+        updated_item = db.query(self.model).filter(self.model.id == id).first()
+        updated_item.title = data.title
+        updated_item.description = data.description
+        db.add(updated_item)
         db.commit()
-        db.refresh(updated_menu)
-        return updated_menu
+        db.refresh(updated_item)
+        return updated_item
 
-    @staticmethod
-    def delete_menu(id: uuid.UUID, db):
-        deleted_menu = db.query(Menu).filter(Menu.id == id).first()
-        db.delete(deleted_menu)
+    def delete_menu(self, id: uuid.UUID, db: Session):
+        deleted_item = db.query(self.model).filter(self.model.id == id).first()
+        db.delete(deleted_item)
         db.commit()
+
+    def get_rel_submenu(self, menu_id: uuid.UUID, db: Session):
+        return db.query(Submenu).filter(Submenu.menu_id == menu_id).all()
+
+    def creation_rel_submenu(self, menu_id: uuid.UUID, data: schemas.Menu | schemas.Submenu, db: Session):
+        menu = db.query(Menu).filter(Menu.id == menu_id).first()
+        created_item = Submenu(title=data.title, description=data.description, menu=menu)
+        db.add(created_item)
+        db.commit()
+        db.refresh(created_item)
+        return created_item
+
+    def get_rel_submenu_by_id(self, menu_id: uuid.UUID, id: uuid.UUID, db: Session):
+        return db.query(Submenu).filter(Submenu.id == id, Submenu.menu_id == menu_id).first()
+
+    def updating_rel_submenu(self, menu_id: uuid.UUID, id: uuid.UUID, data: schemas.Submenu, db: Session):
+        menu = db.query(Menu).filter(Menu.id == menu_id).first()
+        updated_submenu = db.query(Submenu).filter(Submenu.id == id, Submenu.menu_id == menu_id).first()
+        updated_submenu.title = data.title
+        updated_submenu.description = data.description
+        updated_submenu.menu = menu
+        db.add(updated_submenu)
+        db.commit()
+        db.refresh(updated_submenu)
+        return updated_submenu

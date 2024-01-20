@@ -8,12 +8,7 @@ class Menu(BaseModel):
     title: str
     description: str
 
-#     class Config:
-#         from_attributes = True
-#
-#
-# class MenuDTO(MenuAddDTO):
-#     id: int
-#
-#     class Config:
-#         from_attributes = True
+
+class Submenu(BaseModel):
+    title: str
+    description: str

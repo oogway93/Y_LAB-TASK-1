@@ -18,7 +18,7 @@ restaurant_service = CRUDRestaurantService(Submenu)
 
 @router.post("/{menu_id}/submenus")
 async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)):
-    submenu_creation = restaurant_service.creation_rel_submenu(menu_id, data, db)
+    submenu_creation = restaurant_service.create(data, db, menu_id)
     if not submenu_creation:
         return Response(content="Error: Creation menu is failed", status_code=400)
     json_compatible_item_data = jsonable_encoder(submenu_creation)
@@ -26,27 +26,27 @@ async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu = None, db: S
 
 
 @router.get("/{menu_id}/submenus/{id}")
-async def get_submenu_by_menu_id(menu_id: uuid.UUID, id: uuid.UUID, db: Session = Depends(get_db)):
-    submenu = restaurant_service.get_rel_submenu_by_id(menu_id, id, db)
+async def get_submenu_by_menu_id(id: uuid.UUID, db: Session = Depends(get_db)):
+    submenu = restaurant_service.read(db, id)
     if not submenu:
         return JSONResponse(content={"detail": "submenu not found"}, status_code=404)
     return submenu
 
 
 @router.get("/{menu_id}/submenus")
-async def get_list_submenus(menu_id: uuid.UUID, db: Session = Depends(get_db)):
-    return restaurant_service.get_rel_all_submenus(menu_id, db)
+async def get_list_submenus(db: Session = Depends(get_db)):
+    return restaurant_service.read_all(db)
 
 
 @router.patch("/{menu_id}/submenus/{id}")
-async def update_submenu(menu_id: uuid.UUID, id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)):
-    updated_submenu = restaurant_service.updating_rel_submenu(menu_id, id, data, db)
+async def update_submenu(id: uuid.UUID, data: schemas.Submenu = None, db: Session = Depends(get_db)):
+    updated_submenu = restaurant_service.update(data, db, id)
     json_compatible_item_data = jsonable_encoder(updated_submenu)
     return JSONResponse(content=json_compatible_item_data)
 
 
 @router.delete("/{menu_id}/submenus/{id}")
-async def delete_submenu(menu_id: uuid.UUID, id: uuid.UUID, db: Session = Depends(get_db)):
-    return restaurant_service.delete_submenu(menu_id, id, db)
+async def delete_submenu(id: uuid.UUID, db: Session = Depends(get_db)):
+    return restaurant_service.delete(db, id)
 
 

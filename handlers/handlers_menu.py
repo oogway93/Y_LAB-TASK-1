@@ -17,7 +17,7 @@ restaurant_service = CRUDRestaurantService(Menu)
 
 @router.post("/menus")
 async def create_menu(data: schemas.Menu = None, db: Session = Depends(get_db)):
-    menu_creation = restaurant_service.creation_menu(data, db)
+    menu_creation = restaurant_service.create(data, db)
     if not menu_creation:
         return Response(content="Error: Creation menu is failed", status_code=400)
     json_compatible_item_data = jsonable_encoder(menu_creation)
@@ -26,7 +26,7 @@ async def create_menu(data: schemas.Menu = None, db: Session = Depends(get_db)):
 
 @router.get("/menus/{id}")
 async def get_menu_by_id(id: uuid.UUID, db: Session = Depends(get_db)):
-    menu = restaurant_service.getting_menu_by_id(id, db)
+    menu = restaurant_service.read(db, id)
     if not menu:
         return JSONResponse(content={"detail": "menu not found"}, status_code=404)
     return menu
@@ -34,16 +34,16 @@ async def get_menu_by_id(id: uuid.UUID, db: Session = Depends(get_db)):
 
 @router.get("/menus")
 async def get_all_menus(db: Session = Depends(get_db)):
-    return restaurant_service.get_all_menus(db)
+    return restaurant_service.read_all(db)
 
 
 @router.patch("/menus/{id}")
 async def update_menu(id: uuid.UUID, data: schemas.Menu = None, db: Session = Depends(get_db)):
-    updated_menu = restaurant_service.updating_menu(id, data, db)
+    updated_menu = restaurant_service.update(data, db, id)
     json_compatible_item_data = jsonable_encoder(updated_menu)
     return JSONResponse(content=json_compatible_item_data)
 
 
 @router.delete("/menus/{id}")
 async def delete_menu(id: uuid.UUID, db: Session = Depends(get_db)):
-    return restaurant_service.delete_menu(id, db)
+    return restaurant_service.delete(db, id)

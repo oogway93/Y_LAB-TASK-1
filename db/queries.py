@@ -3,61 +3,52 @@ import uuid
 from sqlalchemy import select, update, delete
 from sqlalchemy.orm import Session
 
-from db.database import async_engine, Base, async_session
+from db.database import async_engine, Base, engine, SessionLocal
 from db.models import Menu
 from db import schemas
 
 
-class AsyncORM:
+class RestaurantService:
     """ALL ORM METHODS."""
 
     @staticmethod
-    async def create_tables():
-        async with async_engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
-            await conn.run_sync(Base.metadata.create_all)
+    def create_tables():
+        Base.metadata.drop_all(engine)
+        Base.metadata.create_all(engine)
 
     @staticmethod
-    async def creation_menu(title: str, description: str):
-        async with async_session() as session:
-            menu = Menu(title=title, description=description)
-            session.add(menu)
-            await session.commit()
+    def creation_menu(data: schemas.Menu, db: Session):
+        created_menu = Menu(title=data.title, description=data.description)
+        db.add(created_menu)
+        db.commit()
+        db.refresh(created_menu)
+        return created_menu
 
     @staticmethod
-    async def getting_list_menu():
-        async with async_session() as session:
-            stmt = (select(Menu))
-            res = await session.execute(stmt)
-            result = res.scalars().all()
-            result_orm = [
-                schemas.MenuAddDTO.model_validate(row, from_attributes=True)
-                for row in result
-            ]
-            return result_orm
+    def getting_list_menus(db: Session):
+        return db.query(Menu).all()
 
     @staticmethod
-    async def getting_menu_by_id(id: uuid.UUID, db: Session):
+    def getting_menu_by_id(id: uuid.UUID, db: Session):
         try:
-            menu = db.query(Menu).filter(Menu.id == id).first()
-            # result_orm = [
-            #     schemas.MenuAddDTO.model_validate(row, from_attributes=True)
-            #     for row in result
-            # ]
+            stmt = db.query(Menu).filter(Menu.id == id).first()
         except Exception as e:
+            print(e)
             return False
-        return menu
+        return stmt
 
     @staticmethod
-    async def updating_menu(id: uuid.UUID, title: str, description: str):
-        async with async_session() as session:
-            query = update(Menu).where(Menu.id == id).values(title=title, description=description)
-            session.execute(query)
-            await session.commit()
+    def updating_menu(id: uuid.UUID, data: schemas.Menu, db: Session):
+        updated_menu = db.query(Menu).filter(Menu.id == id).first()
+        updated_menu.title = data.title
+        updated_menu.description = data.description
+        db.add(updated_menu)
+        db.commit()
+        db.refresh(updated_menu)
+        return updated_menu
 
     @staticmethod
-    async def delete_menu(id: uuid.UUID):
-        async with async_session() as session:
-            query = delete(Menu).where(Menu.id == id)
-            session.execute(query)
-            await session.commit()
+    def delete_menu(id: uuid.UUID, db):
+        deleted_menu = db.query(Menu).filter(Menu.id == id).first()
+        db.delete(deleted_menu)
+        db.commit()

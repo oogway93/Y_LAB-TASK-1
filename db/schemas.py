@@ -4,10 +4,16 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class MenuAddDTO(BaseModel):
+class Menu(BaseModel):
     title: str
     description: str
 
-
-class MenuDTO(MenuAddDTO):
-    id: UUID
+#     class Config:
+#         from_attributes = True
+#
+#
+# class MenuDTO(MenuAddDTO):
+#     id: int
+#
+#     class Config:
+#         from_attributes = True

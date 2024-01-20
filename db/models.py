@@ -13,7 +13,13 @@ metadata_obj = MetaData()
 
 class Menu(Base):
     __tablename__ = "menus"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True, nullable=False)
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        index=True,
+        nullable=False,
+    )
     title: Mapped[str] = mapped_column(unique=True)
     description: Mapped[str]
     # submenus_count: Mapped[int] = mapped_column(default=0)
@@ -23,7 +29,7 @@ class Menu(Base):
 
 class Submenu(Base):
     __tablename__ = 'submenus'
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
     title: Mapped[str] = mapped_column(unique=True)
     description: Mapped[str]
     dishes_count: Mapped[int] = mapped_column(default=0)
@@ -35,7 +41,8 @@ class Submenu(Base):
 
 class Dish(Base):
     __tablename__ = "dishes"
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+
     title: Mapped[str] = mapped_column(unique=True, nullable=True)
     description: Mapped[str] = mapped_column(nullable=True)
     price: Mapped[float] = mapped_column(index=True)

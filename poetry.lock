@@ -123,6 +123,14 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "psycopg2-binary"
+version = "2.9.9"
+description = "psycopg2 - Python-PostgreSQL Database Adapter"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "pydantic"
 version = "2.5.3"
 description = "Data validation using Python type hints"
@@ -257,7 +265,7 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "7ff59f008fe89b372a348b4ed3a93ce2f70a04695e1e09cf60f56ced94a9d810"
+content-hash = "0fe0c5af5d1d293318244d84d4f832e3e5190049c7afe609895be4969f041d64"
 
 [metadata.files]
 annotated-types = []
@@ -271,6 +279,7 @@ fastapi = []
 greenlet = []
 h11 = []
 idna = []
+psycopg2-binary = []
 pydantic = []
 pydantic-core = []
 python-dotenv = []

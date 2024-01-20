@@ -21,7 +21,7 @@ async def create_dish(submenu_id: uuid.UUID, data: schemas.Dish, db: Session = D
     if not dish_creation:
         return Response(content="Failed to create dish", status_code=400)
     json_compatible_item_data = jsonable_encoder(dish_creation)
-    json_compatible_item_data["price"] = str(jsonable_encoder(dish_creation)["price"])
+    json_compatible_item_data["price"] = str(json_compatible_item_data["price"])
     return JSONResponse(content=json_compatible_item_data, status_code=201)
 
 

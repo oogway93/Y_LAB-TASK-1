@@ -31,7 +31,10 @@ class CRUDRestaurantService:
             submenu_id: uuid.UUID = None,
             id: uuid.UUID = None
     ):
-        table = self.model(**data.dict())
+        data_dict = data.dict()
+        # if "price" in data_dict:
+        #     data_dict["price"] = str(float(data_dict["price"]))
+        table = self.model(**data_dict)
         if id is not None:
             table.id = id
         if menu_id is not None:
@@ -55,20 +58,20 @@ class CRUDRestaurantService:
         if id:
             result = db.query(self.model).filter(self.model.id == id).first()
             if self.model == Menu and result is not None:
-                submenu_count = db.query(Submenu).filter(Submenu.id == id).count()
-                dish_count = (db.query(Dish)
-                              .join(Submenu, Dish.submenu_id == Submenu.id)
-                              .filter(Submenu.menu_id == id)
-                              .count())
-                result.submenu_count = submenu_count
-                result.dish_count = dish_count
-            if self.model == Submenu and result is not None:
+                submenu_count = db.query(Submenu).filter(Submenu.menu_id == id).count()
                 dish_count = (
                     db.query(Dish)
-                    .filter(Dish.submenu_id == id)
+                    .join(Submenu, Dish.submenu_id == Submenu.id)
+                    .filter(Submenu.menu_id == id)
                     .count()
                 )
-                result.dish_count = dish_count
+                result.submenus_count = submenu_count
+                result.dishes_count = dish_count
+            elif self.model == Submenu and result is not None:
+                dish_count = db.query(Dish).filter(Dish.submenu_id == id).count()
+                result.dishes_count = dish_count
+            # elif self.model == Dish and result is not None:
+            #     result.price = str(float(result.price))
             return result
 
     def read_all(
@@ -99,7 +102,6 @@ class CRUDRestaurantService:
             db: Session,
             id: uuid.UUID = None
     ):
-        table = db.query(self.model).filter(self.model.id == id).first()
-        db.delete(table)
+        db.query(self.model).filter(self.model.id == id).delete()
         db.commit()
-        return table
+

@@ -1,10 +1,11 @@
 import uuid
-from typing import List
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from fastapi.responses import JSONResponse, Response
+from fastapi import APIRouter
+from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+from fastapi.responses import Response
+from sqlalchemy.orm import Session
 
 from db import schemas
 from db.database import get_db
@@ -26,7 +27,7 @@ async def create_submenu(menu_id: uuid.UUID, data: schemas.Submenu = None, db: S
 
 
 @router.get("/{menu_id}/submenus/{id}")
-async def get_submenu_by_menu_id(id: uuid.UUID, db: Session = Depends(get_db)):
+async def get_submenu(id: uuid.UUID, db: Session = Depends(get_db)):
     submenu = restaurant_service.read(db, id)
     if not submenu:
         return JSONResponse(content={"detail": "submenu not found"}, status_code=404)
@@ -34,7 +35,7 @@ async def get_submenu_by_menu_id(id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/{menu_id}/submenus")
-async def get_list_submenus(db: Session = Depends(get_db)):
+async def get_all_submenus(db: Session = Depends(get_db)):
     return restaurant_service.read_all(db)
 
 
@@ -48,5 +49,3 @@ async def update_submenu(id: uuid.UUID, data: schemas.Submenu = None, db: Sessio
 @router.delete("/{menu_id}/submenus/{id}")
 async def delete_submenu(id: uuid.UUID, db: Session = Depends(get_db)):
     return restaurant_service.delete(db, id)
-
-

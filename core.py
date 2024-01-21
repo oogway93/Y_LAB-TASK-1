@@ -3,15 +3,15 @@ import asyncio
 import uvicorn
 from fastapi import FastAPI
 
-from handlers.handlers_menu import router
-from handlers.handlers_submenu import router as router2
-from handlers.handlers_dish import router as router3
 from db.queries import CRUDRestaurantService
+from handlers.handlers_dish import router as dish_router
+from handlers.handlers_menu import menu_router
+from handlers.handlers_submenu import router as submenu_router
 
 app = FastAPI(title="Task 1")
-app.include_router(router)
-app.include_router(router2)
-app.include_router(router3)
+app.include_router(menu_router)
+app.include_router(submenu_router)
+app.include_router(dish_router)
 
 
 async def main():
@@ -20,4 +20,4 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-    uvicorn.run("core:app", reload=True)
+    uvicorn.run("core:app", reload=True, host="0.0.0.0")

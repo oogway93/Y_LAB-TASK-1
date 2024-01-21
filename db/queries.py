@@ -1,15 +1,12 @@
 import logging
 import uuid
-from typing import Optional
 
-from sqlalchemy import select, update, delete
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
-from db.database import async_engine, Base, engine, SessionLocal
-from db.models import Menu, Submenu, Dish
 from db import schemas
+from db.database import Base, engine
+from db.models import Menu, Submenu, Dish
 
 
 class CRUDRestaurantService:
@@ -31,10 +28,7 @@ class CRUDRestaurantService:
             submenu_id: uuid.UUID = None,
             id: uuid.UUID = None
     ):
-        data_dict = data.dict()
-        # if "price" in data_dict:
-        #     data_dict["price"] = str(float(data_dict["price"]))
-        table = self.model(**data_dict)
+        table = self.model(**data.dict())
         if id is not None:
             table.id = id
         if menu_id is not None:
@@ -70,8 +64,6 @@ class CRUDRestaurantService:
             elif self.model == Submenu and result is not None:
                 dish_count = db.query(Dish).filter(Dish.submenu_id == id).count()
                 result.dishes_count = dish_count
-            # elif self.model == Dish and result is not None:
-            #     result.price = str(float(result.price))
             return result
 
     def read_all(
@@ -104,4 +96,3 @@ class CRUDRestaurantService:
     ):
         db.query(self.model).filter(self.model.id == id).delete()
         db.commit()
-

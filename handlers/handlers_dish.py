@@ -1,9 +1,11 @@
 import uuid
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from fastapi.responses import JSONResponse, Response
+from fastapi import APIRouter
+from fastapi import Depends
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+from fastapi.responses import Response
+from sqlalchemy.orm import Session
 
 from db import schemas
 from db.database import get_db
@@ -36,7 +38,7 @@ async def get_dish(id: uuid.UUID, db: Session = Depends(get_db)):
 
 
 @router.get("/{menu_id}/submenus/{submenu_id}/dishes")
-async def get_all_dish(db: Session = Depends(get_db)):
+async def get_all_dishes(db: Session = Depends(get_db)):
     return restaurant_service.read_all(db)
 
 

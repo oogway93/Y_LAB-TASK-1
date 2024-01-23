@@ -29,10 +29,13 @@
 1. Firstly, you need to add venv file by this command:
    ```python 
     python -m venv venv
-2. Install dependencies:
+2. Activate the environment (for linux):
+   ```python
+   source venv/bin/activate
+4. Install dependencies:
    ```python
    poetry install
-3. Create a ".env" file at the root of the directory with params:
+5. Create a ".env" file at the root of the directory with params:
    ```python
    ALL SETTINGS FOR POSTGRESQL
    
@@ -41,7 +44,8 @@
    DB_NAME=your name of db
    DB_HOST=127.0.0.1 or localhost
    DB_PORT=5432
-4. Start an app from core.py file:
-### core.py
-> ![photo](https://i.imgur.com/Gorj4Pi.png)
+6. Start an app due this command:
+   ```python
+   python core.py
+
 
